@@ -14,10 +14,20 @@
     var points = {"X":1,"O":-1};
 
     // Game is over when any {row,col,diag} has an X || O count of 3
-    var gameOver = false;
-    var rows = [0,0,0]
-    var cols = [0,0,0]
-    var diag = [0,0]
+    function init(board) {
+      for (i=0; i < board.length; i++) {
+        for (j=0; j < board.length; j++) {
+          board[i][j].textContent = "";
+        }
+      }
+      document.getElementById("prompt").textContent = "Player X to move";
+      gameOver = false;
+      rows = [0, 0, 0]
+      cols = [0, 0, 0]
+      diag = [0, 0]
+      moves = 0;
+      return board;
+    }
 
     function CheckGameOver(square, player) {
       if (square[0] == square[1]) {
@@ -37,60 +47,71 @@
       return false;
     }
 
-    // Create board
-    prompt = document.createElement("div");
-    prompt.id = "prompt";
-    prompt.style.position = "absolute";
-    prompt.style.top = "630px";
-    prompt.style.left = "160px";
-    prompt.style.fontSize = "40px";
-    var prompt_text = document.createTextNode("Player X to move");
-    prompt.appendChild(prompt_text);
-    document.body.appendChild(prompt);
+    // Create board and play
+    function startGame() {
+      prompt = document.createElement("div");
+      prompt.id = "prompt";
+      prompt.style.position = "absolute";
+      prompt.style.top = "630px";
+      prompt.style.left = "160px";
+      prompt.style.fontSize = "40px";
+      var prompt_text = document.createTextNode("Player X to move");
+      prompt.appendChild(prompt_text);
+      document.body.appendChild(prompt);
 
-    var squares = [];
-    for (i = 0; i < 3; i++) {
-      squares[i] = [];
-      for (j = 0; j < 3; j++) {
-        squares[i][j] = document.createElement("div");
-        squares[i][j].id = i + "" + j;
-        squares[i][j].style.position = "absolute";
-        squares[i][j].style.left = (200*j) + "px";
-        squares[i][j].style.top = (200*i) + "px";
-        squares[i][j].style.width = '200px';
-        squares[i][j].style.height = '200px';
-        squares[i][j].style.background = 'lightblue';
-        squares[i][j].style.border = 'solid #000';
-        squares[i][j].style.textAlign = "center";
-        squares[i][j].style.lineHeight = "200px";
-        squares[i][j].style.fontSize = "30px";
+      var squares = [];
+      for (i = 0; i < 3; i++) {
+        squares[i] = [];
+        for (j = 0; j < 3; j++) {
+          squares[i][j] = document.createElement("div");
+          squares[i][j].id = i + "" + j;
+          squares[i][j].style.position = "absolute";
+          squares[i][j].style.left = (200 * j) + "px";
+          squares[i][j].style.top = (200 * i) + "px";
+          squares[i][j].style.width = '200px';
+          squares[i][j].style.height = '200px';
+          squares[i][j].style.background = 'lightblue';
+          squares[i][j].style.border = 'solid #000';
+          squares[i][j].style.textAlign = "center";
+          squares[i][j].style.lineHeight = "200px";
+          squares[i][j].style.fontSize = "30px";
 
-        var text = document.createTextNode("");
-        squares[i][j].appendChild(text);
-        document.body.appendChild(squares[i][j]);
+          var text = document.createTextNode("");
+          squares[i][j].appendChild(text);
+          document.body.appendChild(squares[i][j]);
 
-        squares[i][j].onclick = function(e) {
-          if (gameOver) {
-            alert("Game has ended");
-          } else if (e.target.textContent == "") {
-            e.target.textContent = activePlayer;
+          squares[i][j].onclick = function (e) {
+            if (e.target.textContent == "") {
+              e.target.textContent = activePlayer;
 
-            // Check if game is over
-            gameOver = CheckGameOver(e.target.id, activePlayer);
-            if (gameOver) {
-              alert("Player: " + activePlayer + " has won")
-            };
+              // Check if game is over
+              res = CheckGameOver(e.target.id, activePlayer);
+              if (res) {
+                alert("Player: " + activePlayer + " has won");
+                squares = init(squares);
+              } else {
+                // Switch players
+                activePlayer = change[activePlayer];
+                document.getElementById("prompt").textContent = "Player " + activePlayer + " to move";
+                moves += 1;
+              }
 
-            // Switch players
-            activePlayer = change[activePlayer];
-            document.getElementById("prompt").textContent = "Player " + activePlayer + " to move"
-
-          } else {
-            alert("Square has already been selected");
+              // Check Draw
+              if (!res && moves == 9) {
+                alert("Draw");
+                squares = init(squares);
+              }
+            } else {
+              alert("Square has already been selected");
+            }
           }
         }
       }
+      squares = init(squares);
     }
+
+    startGame();
+
   </script>
 </body>
 
