@@ -38,49 +38,59 @@
     }
 
     // Create board
-      var squares = [];
-      for (i = 0; i < 3; i++) {
-        squares[i] = [];
-        for (j = 0; j < 3; j++) {
-          squares[i][j] = document.createElement("div");
-          squares[i][j].id = i + "" + j;
-          squares[i][j].style.position = "absolute";
-          squares[i][j].style.left = (200*j) + "px";
-          squares[i][j].style.top = (200*i) + "px";
-          squares[i][j].style.width = '200px';
-          squares[i][j].style.height = '200px';
-          squares[i][j].style.background = 'lightblue';
-          squares[i][j].style.border = 'solid #000';
-          squares[i][j].style.textAlign = "center";
-          squares[i][j].style.fontSize = "30px";
-          squares[i][j].style.lineHeight = "200px";
+    prompt = document.createElement("div");
+    prompt.id = "prompt";
+    prompt.style.position = "absolute";
+    prompt.style.top = "630px";
+    prompt.style.left = "160px";
+    prompt.style.fontSize = "40px";
+    var prompt_text = document.createTextNode("Player X to move");
+    prompt.appendChild(prompt_text);
+    document.body.appendChild(prompt);
 
-          var text = document.createTextNode("");
-          squares[i][j].appendChild(text);
-          document.body.appendChild(squares[i][j]);
+    var squares = [];
+    for (i = 0; i < 3; i++) {
+      squares[i] = [];
+      for (j = 0; j < 3; j++) {
+        squares[i][j] = document.createElement("div");
+        squares[i][j].id = i + "" + j;
+        squares[i][j].style.position = "absolute";
+        squares[i][j].style.left = (200*j) + "px";
+        squares[i][j].style.top = (200*i) + "px";
+        squares[i][j].style.width = '200px';
+        squares[i][j].style.height = '200px';
+        squares[i][j].style.background = 'lightblue';
+        squares[i][j].style.border = 'solid #000';
+        squares[i][j].style.textAlign = "center";
+        squares[i][j].style.lineHeight = "200px";
+        squares[i][j].style.fontSize = "30px";
 
-          squares[i][j].onclick = function(e) {
+        var text = document.createTextNode("");
+        squares[i][j].appendChild(text);
+        document.body.appendChild(squares[i][j]);
+
+        squares[i][j].onclick = function(e) {
+          if (gameOver) {
+            alert("Game has ended");
+          } else if (e.target.textContent == "") {
+            e.target.textContent = activePlayer;
+
+            // Check if game is over
+            gameOver = CheckGameOver(e.target.id, activePlayer);
             if (gameOver) {
-              alert("Game has ended");
-            } else if (e.target.textContent == "") {
-              e.target.textContent = activePlayer;
+              alert("Player: " + activePlayer + " has won")
+            };
 
-              // Check if game is over
-              gameOver = CheckGameOver(e.target.id, activePlayer);
-              if (gameOver) {
-                alert("Player: " + activePlayer + " has won")
-              };
+            // Switch players
+            activePlayer = change[activePlayer];
+            document.getElementById("prompt").textContent = "Player " + activePlayer + " to move"
 
-              // Switch players
-              activePlayer = change[activePlayer];
-
-            } else {
-              alert("Square has already been selected");
-            }
+          } else {
+            alert("Square has already been selected");
           }
         }
       }
-      console.log(squares);
+    }
   </script>
 </body>
 
